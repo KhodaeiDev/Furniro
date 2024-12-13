@@ -22,7 +22,7 @@
       "post": {
         "tags": ["Auth 🔐"],
         "summary": "For User Register",
-        "description": "Default OTP: 1111",
+        "description": "User rigister routes",
         "requestBody": {
           "required": true,
           "content": {
@@ -53,7 +53,24 @@
         },
         "responses": {
           "201": {
-            "description": "Success Register User, (Returned AccessToken and RefreshToken)  and Saved Refreshtoken in Cookies"
+            "description": "Success Register User, (Returned AccessToken and RefreshToken)  and Saved Refreshtoken in Cookies",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "AccessToken-expiresIn": "14 minute",
+                  "refreshToken": "dcbdc-kjcjdsc-cjdc-sjjdsc",
+                  "RefreshToken-expiresIn": "7 day",
+                  "user": {
+                    "_id": "37266829r8ucuef327",
+                    "fullname": "mehran",
+                    "role": "USER",
+                    "email": "example@gmail.com",
+                    "__v": 0
+                  }
+                }
+              }
+            }
           },
           "401": {
             "description": "Email Already exist"
@@ -65,7 +82,7 @@
       "post": {
         "tags": ["Auth 🔐"],
         "summary": "For User Login",
-        "description": "For User Login with username and paassword",
+        "description": "For User Login with email and paassword",
         "requestBody": {
           "required": true,
           "content": {
@@ -88,7 +105,24 @@
         },
         "responses": {
           "200": {
-            "description": "user logged in successfully ,(Returned AccessToken and refreshToken) and Saved Refreshtoken in Cookies"
+            "description": "user logged in successfully ,(Returned AccessToken and refreshToken) and Saved Refreshtoken in Cookies",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "AccessToken-expiresIn": "14 minute",
+                  "refreshToken": "dcbdc-kjcjdsc-cjdc-sjjdsc",
+                  "RefreshToken-expiresIn": "7 day",
+                  "user": {
+                    "_id": "37266829r8ucuef327",
+                    "fullname": "mehran",
+                    "role": "USER",
+                    "email": "example@gmail.com",
+                    "__v": 0
+                  }
+                }
+              }
+            }
           },
           "403": {
             "description": "Invalid Data (Email Or Password)"
@@ -103,9 +137,36 @@
         "description": "Retrieves a new access token using the refresh token stored in cookies.",
         "operationId": "getNewAccessToken",
         "tags": ["Auth 🔐"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "djhdi-dehdhi-ajeucm-alcsaxclamxj"
+                  }
+                },
+                "required": ["refreshToken"]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "New access and Refreshtoken generated successfully."
+            "description": "New access and Refreshtoken generated successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "AccessToken-expiresIn": "14 minute",
+                  "refreshToken": "dcbdc-kjcjdsc-cjdc-sjjdsc",
+                  "RefreshToken-expiresIn": "7 day"
+                }
+              }
+            }
           },
           "401": {
             "description": "Refresh token not provided or invalid."
@@ -132,16 +193,50 @@
         ],
         "responses": {
           "200": {
-            "description": "User information retrieved successfully."
+            "description": "User information retrieved successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "user": {
+                    "_id": "37266829r8ucuef327",
+                    "fullname": "mehran",
+                    "role": "USER",
+                    "email": "example@gmail.com",
+                    "__v": 0
+                  }
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized "
+            "description": "Unauthorized - Token not found or invalid.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Unauthorized !! - token Not Found"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Unauthorized -  token expire"
+            "description": "Forbidden - Token expired.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Unauthorized !! Token Expired"
+                }
+              }
+            }
           },
           "404": {
-            "description": "User not found or token invalid."
+            "description": "User not found.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "User Not found"
+                }
+              }
+            }
           }
         }
       }
@@ -371,7 +466,25 @@
         "tags": ["Category 📂"],
         "responses": {
           "200": {
-            "description": "List of categories retrieved successfully."
+            "description": "List of categories retrieved successfully.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "categories": [
+                    {
+                      "_id": "23dsfbgngrngnh446gnry6fh65",
+                      "title": "test",
+                      "href": "test"
+                    },
+                    {
+                      "_id": "456287ds45236hg45",
+                      "title": "test1",
+                      "href": "test1"
+                    }
+                  ]
+                }
+              }
+            }
           },
           "404": {
             "description": "No categories found."
@@ -417,7 +530,7 @@
       "get": {
         "summary": "Get all newsletter emails",
         "description": "Retrieve a list of all emails in the newsletter.",
-        "tags": ["Newsletter 📰"],
+        "tags": ["Admin Dashboard 📈"],
         "security": [
           {
             "bearerAuth": []
@@ -432,6 +545,101 @@
           },
           "403": {
             "description": "Forbidden. Only admins can access this route."
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      }
+    },
+
+    "/concat/": {
+      "post": {
+        "summary": "Create a new contact message",
+        "description": "Creates a new contact message with name, email, subject, and message. (Subject is a Optional Field)",
+        "tags": ["Concat 📩"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "johndoe@example.com"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "example": "Inquiry",
+                    "required": false
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "I would like more information."
+                  }
+                },
+                "required": ["name", "email", "message"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact message successfully sent.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Your Concat Message Sent"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or bad request."
+          },
+          "500": {
+            "description": "Server error."
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieve all contact messages",
+        "description": "Fetches all contact messages. Requires admin privileges.",
+        "tags": ["Admin Dashboard 📈"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of all contact messages.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "concats": [
+                    {
+                      "name": "Jane Doe",
+                      "email": "janedoe@example.com",
+                      "subject": "Feedback",
+                      "message": "Great service!"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access."
+          },
+          "403": {
+            "description": "Forbidden. Admin privileges required."
           },
           "500": {
             "description": "Server error."
