@@ -1,5 +1,5 @@
-import { getingUaerInformation, checkingLoginStatus, errorMessagesLogout } from "./auth/utils.js"
-import { getToken, getCookieValue, setSecureCookie, storeAccessTokenWithExpiry, getFromLocalStorage, deleteCookie } from "./func/utils.js"
+import { getingUaerInformation, checkingLoginStatus, errorMessagesLogout, } from "./auth/utils.js"
+import { getToken, getCookieValue, setSecureCookie, storeAccessTokenWithExpiry, getFromLocalStorage, deleteCookie, handleError } from "./func/utils.js"
 
 const $ = document
 const hamburger = $.querySelector(".hamburger")
@@ -25,11 +25,11 @@ const navbarDontRegisterText = $.querySelector(".navbar-dont-Register-text")
 
 const fetchLogoutUser = async () => {
     const token = getToken()
-    if (!token) {
+    const refreshToken = getCookieValue("Refresh-Token")
+    if (!token && !refreshToken) {
         return false
     }
 
-    const refreshToken = getCookieValue("Refresh-Token")
     const tokenRefreshData = { "refreshToken": refreshToken };
 
     const response = await fetch("https://furniro-6x7f.onrender.com/auth/log-out", {
@@ -65,34 +65,6 @@ const handleUserAuthentication = async () => {
     navbarSuccessfullyRegisterLoading.style.display = "none";
 }
 
-const handleErrors = (response) => {
-    const message = errorMessagesLogout[response.status] || errorMessagesLogout.default;
-
-    if (response.status === 500) {
-        Swal.fire({
-            title: 'Error!',
-            text: 'Internal server error. Please try again later.',
-            icon: 'error', confirmButtonText: 'Try Again'
-        });
-    } else {
-        Swal.fire({
-            title: "Error!",
-            text: message,
-            icon: "error",
-            customClass: { popup: 'custom-swal2' },
-            confirmButtonText: 'OK',
-            confirmButtonColor: "#B88E2F",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                localStorage.removeItem('Access-Token');
-                localStorage.removeItem('Access-Token-Expiry');
-                document.cookie = 'Refresh-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                window.location.href = '/Furniro/frontend/index.html';
-            }
-        })
-    }
-};
-
 loginSuccessfully.addEventListener("click", async () => {
 
     Swal.fire({
@@ -111,7 +83,8 @@ loginSuccessfully.addEventListener("click", async () => {
             if (userData.success) {
                 localStorage.removeItem('Access-Token');
                 localStorage.removeItem('Access-Token-Expiry');
-                document.cookie = 'Refresh-Token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                deleteCookie("Refresh-Token")
+                deleteCookie('Refresh-Token-Expiry');
                 handleUserAuthentication()
                 Swal.fire({
                     title: "Logged Out Successfully",
@@ -122,12 +95,12 @@ loginSuccessfully.addEventListener("click", async () => {
                     confirmButtonColor: "#B88E2F",
                 }).then(async (result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '/Furniro/frontend/index.html';
+                        location.href = '../index.html';
                     }
                 })
 
             } else {
-                handleErrors(userData.status);
+                handleError(userData, errorMessagesLogout)
             }
         }
     });
@@ -154,11 +127,9 @@ const fetchRefreshToken = async () => {
             },
             body: JSON.stringify(tokenRefreshData),
         });
-        console.log(response);
 
         if (response.ok) {
             const RefreshTokenData = await response.json();
-            console.log(RefreshTokenData);
             return { AccessToken: RefreshTokenData.data.newAccessToken, RefreshToken: RefreshTokenData.data.newRefreshToken };
         } else {
             redirectToLogin();
@@ -207,9 +178,9 @@ const redirectToLogin = () => {
         cancelButtonColor: "#d33",
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '/Furniro/frontend/Pages/auth.html';
+            location.href = '../Pages/auth.html';
         } else if (result.dismiss === Swal.DismissReason.cancel) {
-            window.location.href = '/Furniro/frontend/index.html';
+            location.href = '../index.html';
         }
     });
 }
