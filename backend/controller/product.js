@@ -83,7 +83,7 @@ exports.getAllProducts = async (req, res, next) => {
               else: 0,
             },
           },
-          isNewProduct: { $gte: ["$createdAt", fourWeeksAgo] },
+          isNewProduct: { $gte: ["$updatedAt", fourWeeksAgo] },
           isFavorite: { $in: [{ $toString: "$_id" }, userFavorites] },
         },
       },
@@ -94,7 +94,6 @@ exports.getAllProducts = async (req, res, next) => {
           colors: 0,
           description: 0,
           attributes: 0,
-          updatedAt: 0,
           __v: 0,
         },
       },
@@ -237,6 +236,15 @@ exports.removeProduct = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
   try {
     const { slug } = req.params;
+    const user = req.user;
+    let fourWeeksAgo = new Date();
+    fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+
+    const userFavorites = user
+      ? await favoriteModel
+          .findOne({ user: user._id })
+          .then((fav) => fav?.items.map((item) => item.toString()) || [])
+      : [];
 
     let product = await productModel.aggregate([
       {
@@ -275,7 +283,7 @@ exports.getProduct = async (req, res, next) => {
           averageRating: {
             $cond: {
               if: { $gt: [{ $size: "$comments" }, 0] },
-              then: { $avg: `$comments.rating` },
+              then: { $avg: "$comments.rating" },
               else: 0,
             },
           },
@@ -294,16 +302,35 @@ exports.getProduct = async (req, res, next) => {
 
     const productId = product[0]._id.toString();
     const categoryId = product[0].categoryId._id.toString();
-    const reletedProducts = await productModel
-      .find({
-        categoryId,
-        _id: { $ne: productId },
-      })
-      .select("-description -colors -size -createdAt -updatedAt -__v");
+    const relatedProducts = await productModel.aggregate([
+      {
+        $match: {
+          categoryId: new mongoose.Types.ObjectId(categoryId),
+          _id: { $ne: new mongoose.Types.ObjectId(productId) },
+        },
+      },
+      {
+        $addFields: {
+          isFavorite: { $in: [{ $toString: "$_id" }, userFavorites] },
+          isNewProduct: { $gte: ["$updatedAt", fourWeeksAgo] },
+        },
+      },
+      {
+        $project: {
+          description: 0,
+          colors: 0,
+          size: 0,
+          attributes: 0,
+          createdAt: 0,
+          updatedAt: 0,
+          __v: 0,
+        },
+      },
+    ]);
 
     return successResponse(res, 200, {
       product,
-      reletedProducts,
+      relatedProducts,
     });
   } catch (err) {
     next(err);
@@ -313,17 +340,21 @@ exports.getProduct = async (req, res, next) => {
 exports.getAllFavorites = async (req, res, next) => {
   try {
     const user = req.user;
+    const { page = 1, limit = 4 } = req.query;
+
     const userFavorites = await favoriteModel
       .findOne({ user: user._id })
       .populate({
         path: "items",
         select:
-          "name title price discountPercent description priceAfterDiscount images slug rating label",
+          "name title price discountPercent priceAfterDiscount images slug",
       })
       .populate({
         path: "user",
         select: "-password",
       })
+      .skip((page - 1) * limit)
+      .limit(+limit)
       .select("-createdAt -updatedAt -__v");
 
     if (!userFavorites) {
@@ -332,7 +363,12 @@ exports.getAllFavorites = async (req, res, next) => {
       });
     }
 
-    return successResponse(res, 200, { favorites: userFavorites });
+    const totalFavorites = userFavorites.items.length;
+
+    return successResponse(res, 200, {
+      favorites: userFavorites,
+      pagination: createPagination(+page, +limit, totalFavorites, "Favorites"),
+    });
   } catch (err) {
     next(err);
   }
@@ -355,8 +391,13 @@ exports.addToFavorites = async (req, res, next) => {
       { upsert: true }
     );
 
+    const userFavorites = await favoriteModel
+      .findOne({ user: user._id })
+      .then((fav) => fav?.items.map((item) => item.toString()) || []);
+
     return successResponse(res, 201, {
       message: "Product Add to Favorite List",
+      userFavorites,
     });
   } catch (err) {
     next(err);
@@ -404,7 +445,7 @@ exports.removeFromFavorites = async (req, res, next) => {
 
 exports.searchItem = async (req, res, next) => {
   try {
-    let { title, page = 1, limit = 8 } = req.query;
+    let { title, page = 1, limit = 4 } = req.query;
 
     const filters = {
       quantity: { $gt: 0 },
@@ -435,7 +476,12 @@ exports.searchItem = async (req, res, next) => {
 
     return successResponse(res, 200, {
       products,
-      pagination: createPagination(page, limit, totalProduct, "SearchProduct"),
+      pagination: createPagination(
+        +page,
+        +limit,
+        totalProduct,
+        "SearchProduct"
+      ),
     });
   } catch (err) {
     next(err);
