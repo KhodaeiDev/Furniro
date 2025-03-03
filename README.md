@@ -1,14 +1,34 @@
-# Furniture Store Project
+<h1 align="center"> Furniture Store Project </h1> 
 
 <h2 align="center">❤ Hello, welcome to the Furniture Store Project Repo! ❤</h2>
 <p align="center">سلام، به مخزن پروژه فروشگاه مبلمان خوش آمدید!</p>
 
 ---
 
+## Developed By ❤️  
+
+Backend of this project was developed by [Mehran Khodaei](https://github.com/khodaeidev) using **Node.js**,  
+and Frontend was developed by [Arwin Ghaderi](https://github.com/arwinghaderi) using **Vanilla JavaScript**.
+
+
+
+</br>
+ <h2 >👀 Online project Link... (لینک پروژه)</h2> 
+ 
+<p align="center">
+ <a href="https://furniroo-store.vercel.app/">Check the project online (لینک مشاهده انلاین)</a>
+  </br>
+  </br>
+ <a href="https://furniro-6x7f.onrender.com/apis/">Check the Api documents </a>
+</p>
+
+---
+
 ## 🌟 **Project Overview (بررسی پروژه)**
 - **Name (نام پروژه):** *Furniture store (فروشگاه مبلمان)*
 - **Description (توضیحات پروژه):**
-  > A comprehensive furniture store application with a myriad of features tailored to enhance user experience. The backend is fully customized, the project follows a modular architecture, and clean code practices are adhered to, based on Uncle Bob's "Clean Code". (یک برنامه فروشگاه مبلمان جامع با مجموعه‌ای از ویژگی‌ها برای بهبود تجربه کاربری. بک‌اند کاملاً اختصاصی است، پروژه به صورت ماژولار پیش رفته و از اصول کدنویسی تمیز بر اساس کتاب "Clean Code" عمو باب پیروی شده است.)
+  > A comprehensive furniture store application with a myriad of features tailored to enhance user experience. The backend is fully customized, the project follows a modular architecture, and clean code practices are adhered to, based on Uncle Bob's "Clean Code".
+  > (یک برنامه فروشگاه مبلمان جامع با مجموعه‌ای از ویژگی‌ها برای بهبود تجربه کاربری. بک‌اند کاملاً اختصاصی است، پروژه به صورت ماژولار پیش رفته و از اصول کدنویسی تمیز بر اساس کتاب "Clean Code" عمو باب پیروی شده است.)
 
 ---
 
@@ -48,17 +68,30 @@
 
 <p align="center"> The furniture store project is built with raw JS and JS library and is now 100% completed. Every feature has been designed to be fully dynamic. (پروژه فروشگاه مبلمان با JS خام و کتابخانه JS ساخته شده و اکنون ۱۰۰ درصد تکمیل شده است. هر ویژگی به طور کامل پویا طراحی شده است.) </p>
 
-- 📋 &nbsp;Languages and Tools (زبان ها و ابزار ها):
-  
-  >![HTML5](https://a11ybadges.com/badge?logo=html5)
-  >![CSS3](https://a11ybadges.com/badge?logo=css3)
-  >![JavaScript](https://a11ybadges.com/badge?logo=javascript)
-  >![Swiper](https://a11ybadges.com/badge?logo=swiper)
-  >![Font Awesome](https://a11ybadges.com/badge?logo=fontawesome)
+- 📋 &nbsp;Languages and Tools (زبان‌ها و ابزارها):
 
-- ⚙️ &nbsp;Softwares(نرم افزار ها)  
-   >![Figma](https://a11ybadges.com/badge?logo=figma)
-   >![Visual Studio Code](https://a11ybadges.com/badge?logo=visualstudiocode)
+  ### Backend (بک‌اند): 
+  > ![Node.js](https://camo.githubusercontent.com/c0ed7f7d36d6437790846bc99e238abd7cb2205dbec27c6e6be959abb04e2733/68747470733a2f2f736b696c6c69636f6e732e6465762f69636f6e733f693d6e6f64656a73)
+  > </br>
+  > ![Express.js](https://a11ybadges.com/badge?logo=express)  
+  > ![MongoDB](https://a11ybadges.com/badge?logo=mongodb)
+  >
+  </br>
+  
+  ### Frontend (فرانت‌اند):
+  > ![HTML5](https://a11ybadges.com/badge?logo=html5)  
+  > ![CSS3](https://a11ybadges.com/badge?logo=css3)  
+  > ![JavaScript](https://a11ybadges.com/badge?logo=javascript)  
+  > ![Swiper](https://a11ybadges.com/badge?logo=swiper)  
+  > ![Font Awesome](https://a11ybadges.com/badge?logo=fontawesome)  
+
+
+- ⚙️ &nbsp;Softwares (نرم‌افزارها):  
+  > ![Postman](https://a11ybadges.com/badge?logo=postman)  
+  > ![Swagger](https://a11ybadges.com/badge?logo=swagger)  
+  > ![Figma](https://a11ybadges.com/badge?logo=figma)  
+  > ![Visual Studio Code](https://a11ybadges.com/badge?logo=visualstudiocode)  
+
 
 - 🕓 &nbsp; Version Control(کنترل نسخه):
 
